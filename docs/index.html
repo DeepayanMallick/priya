@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0a040a" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Protocol: Soulmate ♾️❤️</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <!-- Google Fonts: Luxury Pairing -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Outfit', 'sans-serif'],
+            serif: ['Playfair Display', 'serif'],
+            cursive: ['Great Vibes', 'cursive'],
+          },
+          colors: {
+            gold: '#d4af37',
+            rose: '#ff4d6d',
+            roseLight: '#ffd1dc',
+            deep: '#0f0510',
+            paper: '#fdfbf7',
+          },
+          animation: {
+            'shimmer': 'shimmer 2.5s infinite linear',
+            'float': 'float 6s ease-in-out infinite',
+            'mesh': 'mesh 15s ease infinite',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --bg-dark: #070207;
+      --glass: rgba(255, 255, 255, 0.035);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --glass-highlight: rgba(255, 255, 255, 0.12);
+      --accent: #ff4d6d;
+    }
+
+    /* Enterprise Mesh Background */
+    body {
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(255, 77, 109, 0.1) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(124, 58, 237, 0.1) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(255, 77, 109, 0.1) 0px, transparent 50%),
+        radial-gradient(at 0% 100%, rgba(124, 58, 237, 0.1) 0px, transparent 50%),
+        radial-gradient(at 50% 50%, rgba(0, 0, 0, 0.5) 0px, transparent 100%);
+      background-size: 200% 200%;
+      animation: mesh 12s ease infinite;
+      color: white;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+      margin: 0;
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+      /* Fix for "click lock zooming" - disables double-tap zoom */
+      touch-action: manipulation;
+      /* Prevent text selection which can feel un-app-like */
+      -webkit-user-select: none;
+      user-select: none;
+      /* Prevent elastic scrolling bounce */
+      overscroll-behavior-y: none;
+    }
+
+    /* Ensure buttons don't trigger zoom either */
+    button {
+      touch-action: manipulation;
+    }
+
+    @keyframes mesh {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .noise {
+      position: fixed; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 5;
+    }
+
+    /* Heartbeat Glow */
+    @keyframes heartbeat-pulse {
+      0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(1); filter: blur(50px); }
+      50% { opacity: 0.6; transform: translate(-50%, -50%) scale(1.1); filter: blur(70px); }
+    }
+    .heartbeat-bg {
+      position: fixed; top: 50%; left: 50%; width: 400px; height: 400px;
+      background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+      pointer-events: none; z-index: 1;
+      animation: heartbeat-pulse 2s infinite ease-in-out;
+      mix-blend-mode: screen;
+    }
+
+    /* Identity Scanner */
+    .scanner-line {
+      position: absolute; left: 0; width: 100%; height: 3px;
+      background: linear-gradient(to right, transparent, var(--accent), transparent);
+      box-shadow: 0 0 20px var(--accent);
+      top: -10%; opacity: 0; z-index: 100;
+    }
+    .is-scanning .scanner-line {
+      animation: scan-line 2s ease-in-out forwards;
+    }
+    @keyframes scan-line {
+      0% { top: 0%; opacity: 0; }
+      20% { opacity: 1; }
+      80% { opacity: 1; }
+      100% { top: 100%; opacity: 0; }
+    }
+
+    /* Premium Transitions */
+    .scene {
+      position: fixed; inset: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: env(safe-area-inset-top) 24px env(safe-area-inset-bottom);
+      opacity: 0; pointer-events: none;
+      transform: scale(0.96) translateY(20px);
+      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 10;
+    }
+
+    .scene.active {
+      opacity: 1; pointer-events: auto;
+      transform: scale(1) translateY(0);
+    }
+
+    /* Staggered entry for children */
+    .scene.active .animate-stagger > * {
+      animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      opacity: 0;
+    }
+    .scene.active .animate-stagger > *:nth-child(1) { animation-delay: 0.1s; }
+    .scene.active .animate-stagger > *:nth-child(2) { animation-delay: 0.2s; }
+    .scene.active .animate-stagger > *:nth-child(3) { animation-delay: 0.3s; }
+    .scene.active .animate-stagger > *:nth-child(4) { animation-delay: 0.4s; }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Glass Premium Card */
+    .glass-card {
+      background: var(--glass);
+      backdrop-filter: blur(32px);
+      -webkit-backdrop-filter: blur(32px);
+      border: 1px solid var(--glass-border);
+      box-shadow: 
+        0 10px 40px rgba(0, 0, 0, 0.3),
+        inset 0 0 0 1px var(--glass-highlight);
+    }
+
+    /* Luxury Interactive Elements */
+    .key-btn {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.03);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; font-weight: 300;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .key-btn:active {
+      background: rgba(255, 77, 109, 0.15);
+      border-color: rgba(255, 77, 109, 0.4);
+      transform: scale(0.9);
+      box-shadow: 0 0 20px rgba(255, 77, 109, 0.2);
+    }
+
+    .pin-display-dot {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+      box-shadow: inset 0 0 4px rgba(0,0,0,0.5);
+    }
+    .pin-display-dot.active {
+      background: var(--accent);
+      box-shadow: 0 0 15px var(--accent);
+      transform: scale(1.2);
+    }
+
+    /* Holographic Shimmer for Voucher */
+    .holo-shimmer {
+      position: relative; overflow: hidden;
+    }
+    .holo-shimmer::after {
+      content: "";
+      position: absolute; inset: -100%;
+      background: linear-gradient(
+        120deg,
+        rgba(255, 255, 255, 0) 30%,
+        rgba(255, 255, 255, 0.1) 40%,
+        rgba(255, 255, 255, 0.2) 50%,
+        rgba(255, 255, 255, 0.1) 60%,
+        rgba(255, 255, 255, 0) 70%
+      );
+      transform: translateX(-100%);
+      animation: shimmer 4s infinite linear;
+      pointer-events: none;
+    }
+
+    @keyframes shimmer {
+      100% { transform: translateX(100%); }
+    }
+
+    /* Custom Scrollbar */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* Button Animations */
+    .btn-premium {
+      background: linear-gradient(to right, var(--accent), #ff758c);
+      position: relative; overflow: hidden;
+      transition: all 0.4s ease;
+    }
+    .btn-premium:active { transform: scale(0.96); opacity: 0.9; }
+    .btn-premium::before {
+      content: ""; position: absolute; inset: 0;
+      background: linear-gradient(to right, transparent, rgba(255,255,255,0.2), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.6s ease;
+    }
+    .btn-premium:hover::before { transform: translateX(100%); }
+
+  </style>
+</head>
+<body>
+
+  <div class="noise"></div>
+  <div class="heartbeat-bg"></div>
+  <div class="scanner-line"></div>
+
+  <!-- SCENE 1: VAULT (ENTERPRISE ACCESS) -->
+  <section id="scene-vault" class="scene active">
+    <div class="w-full max-w-sm flex flex-col items-center animate-stagger">
+      
+      <!-- Lock Visual -->
+      <div class="relative mb-10">
+        <div class="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center glass-card relative z-10">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-rose-400"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <div class="absolute inset-0 bg-rose-500/20 rounded-full blur-2xl -z-10 animate-pulse"></div>
+      </div>
+      
+      <h1 class="text-3xl font-light text-white mb-2 tracking-[0.1em] font-sans text-center uppercase">
+        Authenticated Access 🔒
+      </h1>
+      <p class="text-white/50 text-[10px] uppercase tracking-[0.2em] mb-12 text-center">
+        Identity Verification: Queen of My Heart
+      </p>
+
+      <!-- PIN Display -->
+      <div class="flex gap-5 mb-12" id="pin-display">
+        <div class="pin-display-dot"></div><div class="pin-display-dot"></div><div class="pin-display-dot"></div>
+        <div class="pin-display-dot"></div><div class="pin-display-dot"></div><div class="pin-display-dot"></div>
+      </div>
+
+      <!-- Keypad -->
+      <div class="grid grid-cols-3 gap-x-8 gap-y-6" id="keypad">
+        <!-- Generated by JS -->
+      </div>
+      
+      <p id="pin-hint" class="mt-12 text-[10px] text-white/30 text-center uppercase tracking-[0.25em] leading-relaxed">
+        Enter your special date, my love ✨<br>
+        <span class="text-[9px] lowercase italic opacity-50">(the day the world was perfected)</span>
+      </p>
+    </div>
+  </section>
+
+
+  <!-- SCENE 2: THE LETTER (PREMIUM READ) -->
+  <section id="scene-letter" class="scene">
+    <div class="w-full max-w-sm glass-card rounded-[32px] p-8 relative overflow-hidden flex flex-col items-center animate-stagger max-h-[85dvh] overflow-y-auto no-scrollbar">
+      <!-- Decorative Backdrop -->
+      <div class="absolute -top-20 -right-20 w-48 h-48 bg-rose-500/10 rounded-full blur-[80px]"></div>
+      <div class="absolute -bottom-20 -left-20 w-48 h-48 bg-purple-500/10 rounded-full blur-[80px]"></div>
+
+      <div class="relative z-10 text-center w-full">
+        <h2 class="font-cursive text-4xl text-roseLight mb-6">To My Forever Queen... 👑</h2>
+        
+        <div class="space-y-4 text-[14px] leading-[1.6] text-white/80 font-light text-balance text-left tracking-wide">
+          <p>
+            My Beautiful Priya 🌸, finding a gift worthy of you feels impossible because <span class="text-white font-medium border-b border-rose-500/30 pb-0.5">your presence is the greatest gift</span> I have ever received. 💖
+          </p>
+          <p>
+            In a world of noise, you are my harmony. In moments of chaos, you are my steady peace. You make every day feel like poetry in motion. 🕊️✨
+          </p>
+          <p>
+            So today, I am offering you the choices below. Not just as gifts, but as promises of time, attention, and endless devotion. 🌹💎
+          </p>
+          <div class="pt-4 text-center">
+             <span class="font-cursive text-2xl text-white/90">I choose you. Always.</span>
+             <p class="text-[10px] uppercase tracking-widest text-rose-400 mt-2">— Deepayan ✍️</p>
+          </div>
+        </div>
+
+        <button onclick="nextScene('scene-letter', 'scene-gift')" class="btn-premium mt-8 w-full py-4 rounded-xl text-white font-semibold tracking-[0.15em] uppercase text-xs shadow-2xl shadow-rose-500/30 transform active:translate-y-1">
+          Explore Your Choices 💋
+        </button>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- SCENE 3: GIFT CURATION (INNOVATIVE GRID) -->
+  <section id="scene-gift" class="scene">
+    <div class="w-full max-w-lg flex flex-col h-[90dvh]">
+      <div class="text-center mb-10 shrink-0 animate-stagger">
+        <span class="text-[10px] text-rose-500 font-bold tracking-[0.3em] uppercase mb-4 block">Curated Collection 2026</span>
+        <h2 class="font-serif text-4xl text-white italic tracking-wide">Your Heart's Desire 👑👸✨</h2>
+        <p class="text-white/40 text-[10px] mt-4 uppercase tracking-[0.2em]">Select an experience to redeem your voucher</p>
+      </div>
+
+      <!-- Gift List -->
+      <div class="flex-1 overflow-y-auto no-scrollbar space-y-4 pb-12 px-2" id="gift-list">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </section>
+
+
+  <!-- VOUCHER OVERLAY (ENTERPRISE DOCUMENT) -->
+  <div id="voucher-overlay" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center opacity-0 pointer-events-none p-6 transition-all duration-500 backdrop-blur-xl" role="dialog">
+    <div class="absolute inset-0" onclick="closeVoucher()"></div>
+
+    <div id="voucher-card" class="relative w-full max-w-md bg-paper text-deep rounded-[32px] overflow-hidden shadow-[0_50px_100px_rgba(0,0,0,0.8)] holo-shimmer group">
+      <!-- High-End Header -->
+      <div class="bg-gradient-to-b from-gray-50 to-gray-100 p-8 border-b border-gray-200/60 relative">
+        <div class="flex justify-between items-start mb-6">
+          <div class="text-[9px] tracking-[0.2em] font-bold text-gray-400 uppercase">Private Issuance • No. SN-PV-2026-02-14</div>
+          <div class="px-3 py-1 bg-rose-100 text-rose-600 rounded-full text-[9px] font-black uppercase tracking-widest animate-pulse">Status: Secured 🔒</div>
+        </div>
+        <h2 class="font-serif text-4xl text-gray-900 italic tracking-tight mb-1">Priya’s Choice</h2>
+        <p class="text-xs text-gray-500 font-cursive text-xl opacity-80 mt-2">Certified for the lady of royalty 🎀</p>
+      </div>
+
+      <!-- Voucher Body -->
+      <div class="p-8 space-y-8">
+        
+        <div class="flex justify-between items-center border-b border-gray-100 pb-6">
+          <div>
+            <div class="text-[10px] uppercase text-gray-400 font-bold tracking-[0.2em] mb-1 text-xs">Entitlement</div>
+            <div id="voucher-item" class="text-2xl font-bold text-rose-600 leading-tight"></div>
+          </div>
+          <div class="text-right">
+             <div class="text-[10px] uppercase text-gray-400 font-bold tracking-[0.2em] mb-1 text-xs">Auth. Date</div>
+             <div id="voucher-date" class="text-sm font-semibold text-gray-800 mt-1"></div>
+          </div>
+        </div>
+
+        <div>
+           <div class="text-[10px] uppercase text-gray-400 font-bold tracking-[0.2em] mb-3 text-xs">Executive Note</div>
+           <p class="font-serif italic text-gray-700 text-base leading-relaxed border-l-2 border-rose-300 pl-4 py-1">
+             "Priya, you are my heart, my soul, and my home. 🏡❤️ I will choose you in every lifetime. I love you endlessly!! 😘💞"
+           </p>
+        </div>
+
+        <div class="bg-gray-50 p-4 rounded-2xl border border-gray-100/50">
+           <div class="text-[9px] uppercase text-gray-400 font-bold tracking-widest mb-2">Legal Adoration Clauses</div>
+           <p class="text-[11px] text-gray-500 leading-normal italic">
+             Voucher redeemable for unlimited heart-beats, spontaneous dancing 💃, and a lifetime of being priority number one. No expiration. No refunds on my devotion. 👸💞
+           </p>
+        </div>
+      </div>
+
+      <!-- Premium Footer -->
+      <div class="bg-rose-50/100 px-8 py-6 text-center border-t border-rose-100 border-dashed">
+        <button onclick="closeVoucher()" class="text-[10px] uppercase tracking-[0.3em] text-gray-400 font-bold hover:text-rose-500 transition-colors flex items-center justify-center gap-2 mx-auto">
+          <span>Close & Choose Again</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
+      </div>
+
+      <!-- Decorative Aesthetic Notches -->
+      <div class="absolute -left-4 top-[175px] w-8 h-8 bg-[#0a040a] rounded-full"></div>
+      <div class="absolute -right-4 top-[175px] w-8 h-8 bg-[#0a040a] rounded-full"></div>
+    </div>
+  </div>
+
+
+  <script>
+    /* ================= DATA & CONFIG ================= */
+    const CONFIG = {
+      pin: "200219", // Priya's Birthday
+      haptics: {
+        tap: [10],
+        error: [50, 30, 50],
+        success: [15, 50, 15, 50],
+        open: [30]
+      }
+    };
+
+    const GIFTS = [
+      { 
+        icon: "🍷", 
+        title: "Candlelit Masterpiece 🕯️", 
+        desc: "A romantic evening curated with your favorite flavors... just us, under the stars! 🤵👰🌙✨" 
+      },
+      { 
+        icon: "💅", 
+        title: "Royalty Shopping Day 🛍️", 
+        desc: "A day where your desires lead. We find everything that makes you shine. 💖👗👠✨" 
+      },
+      { 
+        icon: "🧸", 
+        title: "The Ultimate Movie Cuddle 🍿", 
+        desc: "Wrapped in blankets, your head on my chest, watching what YOU love. Home is here. 🏠🍿💞" 
+      },
+      { 
+        icon: "💍", 
+        title: "A Timeless Symbol ✨", 
+        desc: "A physical token of my pride in walking through this life with you by my side. 👑💑💎" 
+      },
+      { 
+        icon: "🚀", 
+        title: "THE UNLIMITED PACKAGE!! 🎆", 
+        desc: "Because one category can't define my love for you. Let's do it all! 💃🌹🔥❤️" 
+      }
+    ];
+
+    /* ================= STATE ================= */
+    let state = {
+      input: ""
+    };
+
+
+    /* ================= CORE FUNCTIONS ================= */
+    function vibrate(pattern) {
+      if (typeof navigator !== 'undefined' && navigator.vibrate) {
+        navigator.vibrate(pattern);
+      }
+    }
+
+    function nextScene(currentId, nextId) {
+      const current = document.getElementById(currentId);
+      const next = document.getElementById(nextId);
+      
+      vibrate(CONFIG.haptics.open);
+      current.style.opacity = "0";
+      current.style.transform = "scale(1.05) translateY(-20px)";
+      
+      setTimeout(() => {
+        current.classList.remove('active');
+        next.classList.add('active');
+      }, 400);
+    }
+
+    function fireConfetti() {
+      const duration = 3000;
+      const animationEnd = Date.now() + duration;
+      const colors = ['#ff4d6d', '#ffd1dc', '#d4af37', '#ffffff'];
+
+      (function frame() {
+        const timeLeft = animationEnd - Date.now();
+        if (timeLeft <= 0) return;
+
+        const particleCount = 40 * (timeLeft / duration);
+        confetti({
+          particleCount,
+          origin: { x: Math.random(), y: Math.random() - 0.2 },
+          colors: colors,
+          spread: 80,
+          gravity: 0.8,
+          scalar: 0.9,
+          ticks: 150
+        });
+        requestAnimationFrame(frame);
+      }());
+    }
+
+
+    /* ================= SCENE 1: VAULT (KEYPAD) ================= */
+    function initKeypad() {
+      const grid = document.getElementById('keypad');
+      const keys = ['1','2','3','4','5','6','7','8','9','','0','⌫'];
+      
+      grid.innerHTML = keys.map(k => {
+        if (k === '') return `<div></div>`;
+        const isBack = k === '⌫';
+        return `
+          <button class="key-btn ${isBack ? 'text-rose-400 font-bold' : 'text-white'}" 
+            onclick="handlePin('${k}')">
+            ${k}
+          </button>
+        `;
+      }).join('');
+    }
+
+    function handlePin(key) {
+      vibrate(CONFIG.haptics.tap);
+      const dots = document.querySelectorAll('.pin-display-dot');
+      
+      if (key === '⌫') {
+        state.input = state.input.slice(0, -1);
+      } else {
+        if (state.input.length < 6) state.input += key;
+      }
+
+      // Update UI Dots
+      dots.forEach((dot, idx) => {
+        if (idx < state.input.length) dot.classList.add('active');
+        else dot.classList.remove('active');
+      });
+
+      // Authentication
+      if (state.input.length === 6) {
+        if (state.input === CONFIG.pin) {
+          vibrate(CONFIG.haptics.success);
+          // Innovative Identity Scanning Effect
+          document.body.classList.add('is-scanning');
+          setTimeout(() => {
+            document.body.classList.remove('is-scanning');
+            nextScene('scene-vault', 'scene-letter');
+          }, 2000);
+        } else {
+          vibrate(CONFIG.haptics.error);
+          document.getElementById('scene-vault').classList.add('shake');
+          setTimeout(() => {
+            document.getElementById('scene-vault').classList.remove('shake');
+            state.input = "";
+            dots.forEach(d => d.classList.remove('active'));
+          }, 500);
+        }
+      }
+    }
+
+
+    /* ================= SCENE 3: GIFT SELECTION ================= */
+    function renderGifts() {
+      const list = document.getElementById('gift-list');
+      list.innerHTML = GIFTS.map((gift, idx) => `
+        <div onclick="selectGift(${idx})" class="gift-option relative group rounded-3xl p-6 cursor-pointer overflow-hidden glass-card">
+          <div class="flex items-center gap-6 relative z-10 transition-transform duration-500 group-hover:translate-x-2">
+            <div class="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center text-4xl filter drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]">
+              ${gift.icon}
+            </div>
+            <div class="flex-1">
+              <h3 class="font-sans text-lg font-bold text-white tracking-widest uppercase mb-1">
+                ${gift.title}
+              </h3>
+              <p class="text-xs text-white/50 leading-relaxed font-light">
+                ${gift.desc}
+              </p>
+            </div>
+            <div class="opacity-30 group-hover:opacity-100 group-hover:text-rose-400 transition-all">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function selectGift(index) {
+      const gift = GIFTS[index];
+      const today = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+      
+      document.getElementById('voucher-item').innerText = gift.title;
+      document.getElementById('voucher-date').innerText = today;
+
+      vibrate([10, 100, 10, 100, 15, 150]); // Heartbeat Haptic Pattern
+      fireConfetti();
+
+      const overlay = document.getElementById('voucher-overlay');
+      overlay.classList.add('open');
+      overlay.style.opacity = "1";
+      overlay.style.pointerEvents = "auto";
+    }
+
+    function closeVoucher() {
+      const overlay = document.getElementById('voucher-overlay');
+      overlay.style.opacity = "0";
+      overlay.style.pointerEvents = "none";
+      setTimeout(() => overlay.classList.remove('open'), 500);
+      vibrate(CONFIG.haptics.tap);
+    }
+
+
+    /* ================= INITIALIZATION ================= */
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    
+    window.addEventListener('load', () => {
+      initKeypad();
+      renderGifts();
+    });
+
+  </script>
+</body>
+</html>
